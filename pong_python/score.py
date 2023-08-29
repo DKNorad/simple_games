@@ -11,18 +11,12 @@ class Score(GameObject):
         self.p2_score = 0
 
         self.scoreFont = pygame.font.Font(self.font, self.size)
-        self.scoreText = self.scoreFont.render(f"Score", True, self.color, None)
-        self.scoreTextRect = self.scoreText.get_rect(center=(self.x_pos, self.size))
-
-        self.scorePoints = self.scoreFont.render(f"{self.p1_score} - {self.p2_score}",
-                                                 True, self.color, None)
+        self.p1_points = None
+        self.cpu_points = None
 
     def update(self):
-        self.field.blit(self.scoreText, self.scoreTextRect)
-        self.scorePoints = self.scoreFont.render(f"{self.p1_score} - {self.p2_score}",
-                                                 True, self.color, None)
-        self.field.blit(self.scorePoints, self.get_rect())
+        self.p1_points = self.scoreFont.render(str(self.p1_score), True, self.color, None)
+        self.cpu_points = self.scoreFont.render(str(self.p2_score), True, self.color, None)
 
-    def get_rect(self):
-        """Center the points and return as rect object"""
-        return self.scorePoints.get_rect(center=(self.x_pos, self.size * 2))
+        self.field.blit(self.p1_points, self.p1_points.get_rect(topright=(self.x_pos / 2 + 50, 20)))
+        self.field.blit(self.cpu_points, self.cpu_points.get_rect(topleft=(self.x_pos / 2 - 50, 20)))

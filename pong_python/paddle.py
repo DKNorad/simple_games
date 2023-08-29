@@ -16,12 +16,10 @@ class Paddle(GameObject):
         self.paddle = pygame.draw.rect(self.field, self.color, self.paddleRect)
 
     def move(self):
-        if self.paddle.top + self.y_vel < 0:
-            self.y_pos = 0
-        elif self.paddle.bottom + self.y_vel > self.field.get_size()[1]:
-            self.y_pos = self.field.get_size()[1] - self.height
+        if (not (self.paddle.top + self.y_vel <= 0) and
+                not (self.paddle.bottom + self.y_vel > self.field.get_size()[1])):
+            self.y_pos += self.speed * self.y_vel
 
-        self.y_pos += self.speed * self.y_vel
         self.paddleRect = (self.x_pos, self.y_pos, self.width, self.height)
 
     def get_rect(self):

@@ -2,7 +2,6 @@ import pygame
 from paddle import Paddle
 from ball import Ball
 from score import Score
-from random import randint
 
 pygame.init()
 
@@ -17,25 +16,49 @@ FPS = 60
 
 paddle_width = 16
 paddle_height = 100
-paddle_speed = 10
-ball_size = 12
-ball_speed = 6
+paddle_speed = 7
+ball_size = 8
+
+
+def get_paddle_center_pos(cpu):
+    return cpu.y_pos + cpu.height // 2
+
+
+def cpu_ai(cpu, ball, difficulty):
+    if difficulty == "impossible":
+        cpu.y_pos = ball.y_pos - cpu.height // 2 + 5
+    else:
+        if difficulty == "easy":
+            cpu.speed = 3
+        elif difficulty == "hard":
+            cpu.speed = 10
+
+        if ball.x_pos >= WIDTH // 2:
+            if ball.y_pos >= get_paddle_center_pos(cpu) :
+                cpu.y_vel = 1
+            elif ball.y_pos <= get_paddle_center_pos(cpu):
+                cpu.y_vel = -1
+        else:
+            if get_paddle_center_pos(cpu) > HEIGHT // 2:
+                cpu.y_vel = -1
+            elif get_paddle_center_pos(cpu) < HEIGHT // 2:
+                cpu.y_vel = 1
+            else:
+                cpu.y_vel = 0
 
 
 def calculate_velocity(ball_obj, p1_paddle, cpu_paddle, side):
     if side == "left":
         paddle_middle_y = p1_paddle.y_pos + p1_paddle.height / 2
-        paddle_height = p1_paddle.height
+        _paddle_height = p1_paddle.height
     else:
         paddle_middle_y = cpu_paddle.y_pos + cpu_paddle.height / 2
-        paddle_height = cpu_paddle.height
+        _paddle_height = cpu_paddle.height
 
     difference_with_ball = paddle_middle_y - ball_obj.y_pos
-    print(difference_with_ball)
-    vel_reduction = paddle_height / 2 / ball_obj.MAX_VEL
-    print(vel_reduction)
+
+    vel_reduction = _paddle_height / 2 / ball_obj.MAX_VEL
     y_vel = difference_with_ball / vel_reduction
-    print(y_vel)
 
     return y_vel
 
@@ -51,24 +74,23 @@ def handle_collision(ball_obj, p1_paddle, cpu_paddle):
     if ball_obj.x_vel < 0:
         if p1_paddle.y_pos <= ball_obj.y_pos <= p1_paddle.y_pos + p1_paddle.height:
             if p1_paddle.x_pos + p1_paddle.width >= ball_obj.x_pos - ball_obj.radius:
-                ball_obj.hit(-1 * calculate_velocity(ball_obj, p1_paddle, cpu_paddle, "left"))
+                ball_obj.hit(calculate_velocity(ball_obj, p1_paddle, cpu_paddle, "left"))
 
     # Handle ball collision to the CPU paddle on the right.
     if ball_obj.x_vel > 0:
         if cpu_paddle.y_pos <= ball_obj.y_pos <= cpu_paddle.y_pos + cpu_paddle.height:
             if cpu_paddle.x_pos <= ball_obj.x_pos + ball_obj.radius:
-                ball_obj.hit(-1 * calculate_velocity(ball_obj, p1_paddle, cpu_paddle, "left"))
+                ball_obj.hit(calculate_velocity(ball_obj, p1_paddle, cpu_paddle, "right"))
+
 
 def main():
     running = True
 
     # Define the objects
-    player1 = Paddle(10, 0, paddle_width, paddle_height, paddle_speed, WHITE, field)
-    cpu = Paddle(WIDTH - paddle_width - 10, 0, paddle_width, paddle_height, paddle_speed, WHITE, field)
-    ball = Ball(WIDTH // 2, HEIGHT // 2, ball_size, ball_speed, WHITE, field)
+    player1 = Paddle(10, HEIGHT // 2 - paddle_height // 2, paddle_width, paddle_height, paddle_speed, WHITE, field)
+    cpu = Paddle(WIDTH - paddle_width - 10, HEIGHT // 2 - paddle_height // 2, paddle_width, paddle_height, paddle_speed, WHITE, field)
+    ball = Ball(WIDTH // 2, HEIGHT // 2, ball_size, WHITE, field)
     score = Score(pygame.font.get_default_font(), 22, WHITE, field, WIDTH, HEIGHT)
-
-    paddles = [player1, cpu]
 
     while running:
         field.fill(1)
@@ -85,8 +107,6 @@ def main():
             if event.type == pygame.KEYUP:
                 player1.y_vel = 0
 
-        cpu.y_pos = ball.y_pos - 45
-
         if WIDTH <= ball.x_pos or ball.x_pos <= 0:
             if ball.x_pos <= 0:
                 score.p1_score += 1
@@ -98,6 +118,7 @@ def main():
         cpu.move()
         ball.handle_movement()
         handle_collision(ball, player1, cpu)
+        cpu_ai(cpu, ball, "impossible")
 
         player1.update()
         cpu.update()

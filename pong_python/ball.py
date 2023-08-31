@@ -34,10 +34,7 @@ class Ball(GameObject):
         self.y_vel = -1 * y_vel
 
         if self.hits % 5 == 0:
-            if self.x_vel < 0:
-                self.x_vel += -0.25
-            else:
-                self.x_vel += 0.25
+            self.x_vel += -0.25
 
     def reset(self):
         self.is_initial = True

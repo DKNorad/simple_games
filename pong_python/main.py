@@ -34,7 +34,7 @@ def cpu_ai(cpu, ball, difficulty):
             cpu.speed = 10
 
         if ball.x_pos >= WIDTH // 2:
-            if ball.y_pos >= get_paddle_center_pos(cpu) :
+            if ball.y_pos >= get_paddle_center_pos(cpu):
                 cpu.y_vel = 1
             elif ball.y_pos <= get_paddle_center_pos(cpu):
                 cpu.y_vel = -1
@@ -118,7 +118,7 @@ def main():
         cpu.move()
         ball.handle_movement()
         handle_collision(ball, player1, cpu)
-        cpu_ai(cpu, ball, "impossible")
+        cpu_ai(cpu, ball, "hard")
 
         player1.update()
         cpu.update()

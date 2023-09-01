@@ -6,28 +6,66 @@ from random import randint
 class Ball(GameObject):
     MAX_Y_VEL = 5
 
-    def __init__(self, x_pos, y_pos, radius, color, field):
+    def __init__(self, x_pos, y_pos, radius, color, field, p1_paddle=None, cpu_paddle=None):
         super().__init__(x_pos, y_pos, color, field)
         self.center = (x_pos, y_pos)
-        self.width = x_pos * 2
-        self.height = y_pos * 2
+        self.field_width = x_pos * 2
+        self.field_height = y_pos * 2
         self.radius = radius
         self.hits = 0
-        self.x_vel = 10
+        self.default_x_vel = 9
+        self.x_vel = self.default_x_vel
+        self.p1_paddle = p1_paddle
+        self.cpu_paddle = cpu_paddle
 
         self.is_initial = True
         self.ball = pygame.draw.circle(self.field, self.color, (self.x_pos, self.y_pos), self.radius)
+
+    def calculate_velocity(self, side):
+        if side == "left":
+            _paddle_middle_y = self.p1_paddle.y_pos + self.p1_paddle.height / 2
+            _paddle_height = self.p1_paddle.height
+        else:
+            _paddle_middle_y = self.cpu_paddle.y_pos + self.cpu_paddle.height / 2
+            _paddle_height = self.cpu_paddle.height
+
+        difference_with_ball = _paddle_middle_y - self.y_pos
+
+        vel_reduction = _paddle_height / 2 / self.MAX_Y_VEL
+        y_vel = difference_with_ball / vel_reduction
+
+        return y_vel
+
+    def handle_collision(self):
+        # Handle ball collision to top and bottom walls.
+        if self.y_pos - self.radius <= 0:
+            self.y_vel *= -1
+        elif self.y_pos + self.radius >= self.field.get_height():
+            self.y_vel *= -1
+
+        # Handle ball collision to the player paddle on the left.
+        if self.x_vel < 0:
+            if self.p1_paddle.y_pos <= self.y_pos <= self.p1_paddle.y_pos + self.p1_paddle.height:
+                if self.p1_paddle.x_pos + self.p1_paddle.width >= self.x_pos - self.radius:
+                    self.hit(self.calculate_velocity("left"))
+
+        # Handle ball collision to the CPU paddle on the right.
+        if self.x_vel > 0:
+            if self.cpu_paddle.y_pos <= self.y_pos <= self.cpu_paddle.y_pos + self.cpu_paddle.height:
+                if self.cpu_paddle.x_pos <= self.x_pos + self.radius:
+                    self.hit(self.calculate_velocity("right"))
 
     def update(self):
         self.ball = pygame.draw.circle(self.field, self.color, (self.x_pos, self.y_pos), self.radius)
 
     def handle_movement(self):
         if self.is_initial:
-            self.x_vel = 7
-            self.y_vel = randint(-5, 5)
+            self.x_vel = self.default_x_vel - 3
+            self.y_vel = randint(-self.MAX_Y_VEL, self.MAX_Y_VEL)
             self.is_initial = False
-        else:
-            self.x_vel = self.x_vel
+        elif self.hits == 1:
+            self.x_vel = self.default_x_vel
+
         self.y_pos += self.y_vel
         self.x_pos += self.x_vel
 
@@ -36,7 +74,7 @@ class Ball(GameObject):
         self.x_vel *= -1
         self.y_vel = -1 * y_vel
 
-        # Increase the speed every 5 hits.
+        # Increase the X speed every 5 hits.
         if self.hits % 5 == 0:
             self.x_vel *= 1.05
 

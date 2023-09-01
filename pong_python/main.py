@@ -103,11 +103,11 @@ def main_menu():
     while running:
         FIELD.fill(1)
 
-        menu_theme = Theme(background_color=BLACK, title_font_shadow=False, widget_padding=5,
+        menu_theme = Theme(background_color=BLACK, title_font_color=WHITE, widget_padding=5,
                            title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_NONE,
                            widget_selection_effect=pygame_menu.widgets.NoneSelection(),
                            fps=60, title_font=get_font(150), widget_alignment=pygame_menu.locals.ALIGN_LEFT,
-                           widget_margin=(10, 0))
+                           widget_margin=(10, 0), widget_font_color=WHITE)
 
         menu = pygame_menu.Menu('Pong', 800, 600, theme=menu_theme)
         menu.add.button('Play', play)

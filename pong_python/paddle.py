@@ -33,17 +33,21 @@ class Paddle(GameObject):
     def get_rect(self):
         return self.paddle
 
+    def set_difficulty(self):
+        if self.ai_difficulty == "Easy":
+            self.speed -= 3
+        elif self.ai_difficulty == "Normal":
+            pass
+        elif self.ai_difficulty == "Hard":
+            self.speed += 2
+        self.is_start = False
+
     def cpu_ai(self):
-        if self.ai_difficulty == 4:
-            self.y_pos = self.ball_obj.y_pos - self.height // 2 + 5
-        elif self.is_start:
-            if self.ai_difficulty == 1:
-                self.speed -= 3
-            elif self.ai_difficulty == 2:
-                pass
-            elif self.ai_difficulty == 3:
-                self.speed += 2
-            self.is_start = False
+        if self.is_start:
+            self.set_difficulty()
+
+        if self.ai_difficulty == "Impossible":
+            self.y_pos = self.ball_obj.y_pos - self.height // 2
         else:
             if self.ball_obj.x_pos >= self.field_width // 2 and self.ball_obj.x_vel > 0:
                 if self.ball_obj.y_pos >= self.get_paddle_center_pos() + self.height / 4:

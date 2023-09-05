@@ -35,7 +35,7 @@ def set_difficulty(selected, value):
     global player_paddle_height
     global default_option
 
-    difficulty = value
+    difficulty = selected[0][0]
     player_paddle_height = selected[0][1]
 
 

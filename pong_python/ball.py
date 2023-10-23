@@ -1,12 +1,14 @@
 import pygame
+from pygame.rect import Rect, RectType
 from game_object import GameObject
 from random import randint
+from pong_python.paddle import Paddle
 
 
 class Ball(GameObject):
     MAX_Y_VEL = 5
 
-    def __init__(self, x_pos, y_pos, radius, color, field, p1_paddle=None, cpu_paddle=None):
+    def __init__(self, x_pos, y_pos, radius: int, color, field, p1_paddle: Paddle = None, cpu_paddle: Paddle = None):
         super().__init__(x_pos, y_pos, color, field)
         self.center = (x_pos, y_pos)
         self.field_width = x_pos * 2
@@ -21,7 +23,7 @@ class Ball(GameObject):
         self.is_initial = True
         self.ball = pygame.draw.circle(self.field, self.color, (self.x_pos, self.y_pos), self.radius)
 
-    def calculate_velocity(self, side):
+    def calculate_velocity(self, side: str) -> float:
         if side == "left":
             _paddle_middle_y = self.p1_paddle.y_pos + self.p1_paddle.height / 2
             _paddle_height = self.p1_paddle.height
@@ -69,7 +71,7 @@ class Ball(GameObject):
         self.y_pos += self.y_vel
         self.x_pos += self.x_vel
 
-    def hit(self, y_vel):
+    def hit(self, y_vel: float):
         self.hits += 1
         self.x_vel *= -1
         self.y_vel = -1 * y_vel
@@ -84,6 +86,6 @@ class Ball(GameObject):
         self.y_pos = self.center[1]
         self.hits = 0
 
-    def get_rect(self):
+    def get_rect(self) -> Rect | RectType:
         return self.ball
 

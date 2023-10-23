@@ -1,9 +1,9 @@
 import pygame
 import pygame_menu
 from pygame_menu import Theme
-from paddle import Paddle
-from ball import Ball
-from score import Score
+from pong_python.paddle import Paddle
+from pong_python.ball import Ball
+from pong_python.score import Score
 
 pygame.init()
 
@@ -23,17 +23,15 @@ player_paddle_height = 100
 paddle_speed = 7
 ball_size = 8
 difficulty = "Normal"
-default_option = None
 
 
-def get_font(size):
+def get_font(size: int):
     return pygame.font.Font(pygame.font.get_default_font(), size)
 
 
-def set_difficulty(selected, value):
+def set_difficulty(selected: list[tuple[str, int]]):
     global difficulty
     global player_paddle_height
-    global default_option
 
     difficulty = selected[0][0]
     player_paddle_height = selected[0][1]

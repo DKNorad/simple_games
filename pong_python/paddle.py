@@ -1,9 +1,12 @@
 import pygame
+from pygame.rect import Rect, RectType
 from game_object import GameObject
+from pong_python.ball import Ball
 
 
 class Paddle(GameObject):
-    def __init__(self, x_pos, y_pos, width, height, speed, color, field, difficulty="normal", ball_obj=None):
+    def __init__(self, x_pos, y_pos, width: int, height: int, speed: int, color, field, difficulty: str = "normal",
+                 ball_obj: Ball = None):
         super().__init__(x_pos, y_pos, color, field)
         self.width = width
         self.height = height
@@ -17,7 +20,7 @@ class Paddle(GameObject):
         self.paddleRect = pygame.Rect(x_pos, y_pos, width, height)
         self.paddle = pygame.draw.rect(self.field, self.color, self.paddleRect)
 
-    def get_paddle_center_pos(self):
+    def get_paddle_center_pos(self) -> int:
         return self.y_pos + self.height // 2
 
     def update(self):
@@ -30,7 +33,7 @@ class Paddle(GameObject):
 
         self.paddleRect = (self.x_pos, self.y_pos, self.width, self.height)
 
-    def get_rect(self):
+    def get_rect(self) -> Rect | RectType:
         return self.paddle
 
     def set_difficulty(self):

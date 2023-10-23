@@ -25,7 +25,7 @@ ball_size = 8
 difficulty = "Normal"
 
 
-def get_font(size: int):
+def get_font(size: int) -> pygame.font.Font:
     return pygame.font.Font(pygame.font.get_default_font(), size)
 
 

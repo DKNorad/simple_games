@@ -2,7 +2,7 @@ import pygame
 from pygame.rect import Rect, RectType
 from game_object import GameObject
 from random import randint
-from pong_python.paddle import Paddle
+from paddle import Paddle
 
 
 class Ball(GameObject):
@@ -38,7 +38,7 @@ class Ball(GameObject):
 
         return y_vel
 
-    def handle_collision(self):
+    def handle_collision(self) -> None:
         # Handle ball collision to top and bottom walls.
         if self.y_pos - self.radius <= 0:
             self.y_vel *= -1
@@ -57,10 +57,10 @@ class Ball(GameObject):
                 if self.cpu_paddle.x_pos <= self.x_pos + self.radius:
                     self.hit(self.calculate_velocity("right"))
 
-    def update(self):
+    def update(self) -> None:
         self.ball = pygame.draw.circle(self.field, self.color, (self.x_pos, self.y_pos), self.radius)
 
-    def handle_movement(self):
+    def handle_movement(self) -> None:
         if self.is_initial:
             self.x_vel = self.default_x_vel - 3
             self.y_vel = randint(-self.MAX_Y_VEL, self.MAX_Y_VEL)
@@ -71,7 +71,7 @@ class Ball(GameObject):
         self.y_pos += self.y_vel
         self.x_pos += self.x_vel
 
-    def hit(self, y_vel: float):
+    def hit(self, y_vel: float) -> None:
         self.hits += 1
         self.x_vel *= -1
         self.y_vel = -1 * y_vel
@@ -80,7 +80,7 @@ class Ball(GameObject):
         if self.hits % 5 == 0:
             self.x_vel *= 1.05
 
-    def reset(self):
+    def reset(self) -> None:
         self.is_initial = True
         self.x_pos = self.center[0]
         self.y_pos = self.center[1]

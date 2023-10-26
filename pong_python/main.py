@@ -1,9 +1,9 @@
 import pygame
 import pygame_menu
 from pygame_menu import Theme
-from pong_python.paddle import Paddle
-from pong_python.ball import Ball
-from pong_python.score import Score
+from paddle import Paddle
+from ball import Ball
+from score import Score
 
 pygame.init()
 
@@ -29,19 +29,19 @@ def get_font(size: int) -> pygame.font.Font:
     return pygame.font.Font(pygame.font.get_default_font(), size)
 
 
-def set_difficulty(selected: list[tuple[str, int]]):
+def set_difficulty(selected: tuple[tuple[str, int], int], value: int) -> None:
     global difficulty
     global player_paddle_height
 
     difficulty = selected[0][0]
-    player_paddle_height = selected[0][1]
+    player_paddle_height = value
 
 
-def quit_game():
+def quit_game() -> None:
     pygame.quit()
 
 
-def play():
+def play() -> None:
     # Define the objects.
     ball = Ball(WIDTH // 2, HEIGHT // 2, ball_size, WHITE, FIELD)
     player1 = Paddle(10, HEIGHT // 2 - player_paddle_height // 2,
@@ -95,7 +95,7 @@ def play():
         clock.tick(FPS)
 
 
-def main_menu():
+def main_menu() -> None:
     running = True
 
     while running:
@@ -108,6 +108,7 @@ def main_menu():
                            widget_margin=(10, 0), widget_font_color=WHITE, title_offset=(10, 70))
 
         menu = pygame_menu.Menu('Pong', 800, 600, theme=menu_theme)
+
         menu.add.button('Play', play)
         menu.add.dropselect('Difficulty :',
                             [('Easy', 120), ('Normal', 100), ('Hard', 80), ('Impossible', 65)],

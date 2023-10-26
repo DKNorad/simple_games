@@ -1,8 +1,9 @@
+import pygame
 from game_object import GameObject
 
 
 class Score(GameObject):
-    def __init__(self, font, color, field, x_pos, y_pos):
+    def __init__(self, font: pygame.font.Font, color, field, x_pos, y_pos):
         super().__init__(x_pos, y_pos, color, field)
         self.font = font
         self.p1_score = 0
@@ -11,7 +12,7 @@ class Score(GameObject):
         self.p1_points = None
         self.cpu_points = None
 
-    def update(self):
+    def update(self) -> None:
         self.p1_points = self.font.render(str(self.p1_score), True, self.color, None)
         self.cpu_points = self.font.render(str(self.p2_score), True, self.color, None)
 
